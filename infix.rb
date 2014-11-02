@@ -12,11 +12,11 @@ class InfixParser
   testString = '(24 + 6) / 10 * 3'
   shouldEqual = 9
 
-  def solveExpression(expr) #TODO: implement parsing of entire expressions
+  def parseExpression(expr) #TODO: implement parsing of entire expressions
 
   end
 
-  def self.solveChunk(chunk)
+  def self.parseChunk(chunk)
     chunk = chunk.gsub ' ', ''
 
     if not (chunk.include?('/') or chunk.include?('*') \
@@ -68,8 +68,8 @@ class InfixParser
 
 end
 
-puts InfixParser.solveChunk('433.45 * 2')
-puts InfixParser.solveChunk('65*224.5')
-puts InfixParser.solveChunk('4* 25')
-puts InfixParser.solveChunk('489.67 *35')
+puts InfixParser.parseChunk('433.45 * 2')
+puts InfixParser.parseChunk('65*224.5')
+puts InfixParser.parseChunk('4* 25')
+puts InfixParser.parseChunk('489.67 *35')
 
