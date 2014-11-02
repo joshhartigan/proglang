@@ -13,12 +13,12 @@ class InfixParser
   shouldEqual = 9
 
   def solveExpression(expr) #TODO: implement parsing of entire expressions
-    expr.split('').each do |char|
-      puts char
-    end
+
   end
 
   def self.solveChunk(chunk)
+    chunk = chunk.gsub ' ', ''
+
     if not (chunk.include?('/') or chunk.include?('*') \
         or chunk.include?('+') or chunk.include?('-'))
         puts "error: no operations in chunk: #{chunk}"
@@ -28,33 +28,37 @@ class InfixParser
     firstNumber = ''
     secondNumber = ''
 
-    operandIndex = nil
-
-    (0 .. (chunk.length - 1)).each do |i|
-      if chunk[i].is_number? or chunk[i] == '.'
-        firstNumber += chunk[i]
-      elsif chunk[i] != ' '
-        operandIndex = i
-        break
-      end
-    end
-
-    (operandIndex + 1 .. (chunk.length - 1)).each do |i|
-      if chunk[i].is_number? or chunk[i] == '.'
-        secondNumber += chunk[i]
-      elsif chunk[i] != ' '
-        puts "error: invalid character in second chunk operand: #{chunk[i]}"
+    i = 0
+    currentChar = ''
+    while not @operations.include? currentChar
+      currentChar = chunk[i]
+      if not currentChar.is_number? and not @operations.include? currentChar \
+         and currentChar != '.'
+        puts "error: non-numerical digit in chunk: #{currentChar}"
         exit
       end
+      firstNumber += currentChar
+      i += 1
     end
+    firstNumber = firstNumber[0 .. -2]
 
-    if chunk[operandIndex] == '/'
+    for c in i-1 .. chunk.length-1
+      if not chunk[c].is_number? and not @operations.include? currentChar \
+         and currentChar != '.'
+        puts "error: non-numerical digit in chunk: #{currentChar}"
+        exit
+      end
+      secondNumber += chunk[c]
+    end
+    secondNumber = secondNumber[1 .. secondNumber.length - 1]
+
+    if chunk[i - 1] == '/'
       return Float(firstNumber) / Float(secondNumber)
-    elsif chunk[operandIndex] == '*'
+    elsif chunk[i - 1] == '*'
       return Float(firstNumber) * Float(secondNumber)
-    elsif chunk[operandIndex] == '+'
+    elsif chunk[i - 1] == '+'
       return Float(firstNumber) + Float(secondNumber)
-    elsif chunk[operandIndex] == '-'
+    elsif chunk[i - 1] == '-'
       return Float(firstNumber) - Float(secondNumber)
     else
       puts "error: invalid operator in chunk: #{chunk}"
