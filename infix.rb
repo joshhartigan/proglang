@@ -1,9 +1,7 @@
 # infix.rb: parse infix-operated math expressions
 
-class String
-  def is_number?
-    true if Float(self) rescue false
-  end
+def is_number?(str)
+  true if Float(str) rescue false
 end
 
 class InfixParser
@@ -12,11 +10,11 @@ class InfixParser
   testString = '(24 + 6) / 10 * 3'
   shouldEqual = 9
 
-  def parseExpression(expr) #TODO: implement parsing of entire expressions
+  def eval_expression(expr) #TODO: implement parsing of entire expressions
 
   end
 
-  def self.parseChunk(chunk)
+  def self.eval_binary_expression(chunk)
     chunk = chunk.gsub ' ', ''
 
     if not (chunk.include?('/') or chunk.include?('*') \
@@ -32,7 +30,7 @@ class InfixParser
     currentChar = ''
     while not @operations.include? currentChar
       currentChar = chunk[i]
-      if not currentChar.is_number? and not @operations.include? currentChar \
+      if not is_number? currentChar and not @operations.include? currentChar \
          and currentChar != '.'
         puts "error: non-numerical digit in chunk: #{currentChar}"
         exit
@@ -43,7 +41,7 @@ class InfixParser
     firstNumber = firstNumber[0 .. -2]
 
     for c in i-1 .. chunk.length-1
-      if not chunk[c].is_number? and not @operations.include? currentChar \
+      if not is_number? chunk[c] and not @operations.include? currentChar \
          and currentChar != '.'
         puts "error: non-numerical digit in chunk: #{currentChar}"
         exit
@@ -52,24 +50,19 @@ class InfixParser
     end
     secondNumber = secondNumber[1 .. secondNumber.length - 1]
 
-    if chunk[i - 1] == '/'
-      return Float(firstNumber) / Float(secondNumber)
-    elsif chunk[i - 1] == '*'
-      return Float(firstNumber) * Float(secondNumber)
-    elsif chunk[i - 1] == '+'
-      return Float(firstNumber) + Float(secondNumber)
-    elsif chunk[i - 1] == '-'
-      return Float(firstNumber) - Float(secondNumber)
-    else
-      puts "error: invalid operator in chunk: #{chunk}"
+    case chunk[i - 1]
+      when '/' then Float(firstNumber) / Float(secondNumber)
+      when '*' then Float(firstNumber) * Float(secondNumber)
+      when '+' then Float(firstNumber) + Float(secondNumber)
+      when '-' then Float(firstNumber) - Float(secondNumber)
     end
 
   end
 
 end
 
-puts InfixParser.parseChunk('433.45 * 2')
-puts InfixParser.parseChunk('65*224.5')
-puts InfixParser.parseChunk('4* 25')
-puts InfixParser.parseChunk('489.67 *35')
+puts InfixParser.eval_binary_expression('433.45 * 2')
+puts InfixParser.eval_binary_expression('65*224.5')
+puts InfixParser.eval_binary_expression('4* 25')
+puts InfixParser.eval_binary_expression('489.67 *35')
 
