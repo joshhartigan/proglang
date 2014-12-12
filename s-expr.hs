@@ -1,7 +1,10 @@
+isParenthesised :: [Char] -> Bool
 isParenthesised str = str !! 0 == '(' && str !! ((length str) - 1) == ')'
 
+slice :: Int -> Int -> [a]
 slice from to xs = take (to - from + 1) (drop from xs)
 
+parseExpr :: [Char] -> [[Char]]
 parseExpr expr
   | not (isParenthesised expr) = error "s-expr.hs: expression isn't parenthesised"
   | otherwise = words noParens
